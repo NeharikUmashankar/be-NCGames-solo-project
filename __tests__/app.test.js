@@ -36,18 +36,17 @@ describe('1. GET api/:path', () => {
     })
     })
 
-    test.only('status 200: responds with an array of objects with required properties', () => {
+    test('status 200: responds with an array of objects with required properties', () => {
         return request(app)
         .get('/api/reviews ')
         .expect(200)
         .then(({body}) => {
         const {reviews} = body;
-        expect(reviews).toBeInstanceOf(Array);
         expect(reviews).toHaveLength(13);
-
+        expect(reviews).toBeSortedBy('created_at', {descending: true})
+    
 
         reviews.forEach((review) => {
-            
             expect(review).toEqual(
                 expect.objectContaining({
                     owner: expect.any(String),
@@ -65,6 +64,7 @@ describe('1. GET api/:path', () => {
     })
     })
 })
+
 
 
 
