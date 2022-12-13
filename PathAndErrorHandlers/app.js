@@ -1,12 +1,13 @@
 const express = require('express')
 const app = express();
 const {getCategories} = require('../controllers/controller');
-const errorRouter = require('./errorHandles');
+const {handle404s, handle500s} = require('./errorHandles');
 
 
 app.get("/api/categories", getCategories);
 
-app.use('/*', errorRouter)
+app.use('/*', handle404s)
+app.use(handle500s)
 
 
 

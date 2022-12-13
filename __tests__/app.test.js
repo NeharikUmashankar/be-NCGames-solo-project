@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../app');
+const app = require('../PathAndErrorHandlers/app');
 const db = require('../db/connection');
 
 
@@ -12,7 +12,7 @@ afterAll(() => {
     if (db.end) db.end()
 })
 
-describe('1. GET api/categories', () => {
+describe('1. GET api/:path', () => {
 
     test('status 200: responds with an array of objects with properties of slug and description', () => {
         return request(app)
@@ -38,7 +38,9 @@ describe('1. GET api/categories', () => {
 })
 
 
-describe('ALL categories of undefined path', () => {
+
+
+describe.only('ALL categories of undefined path', () => {
 
     test('status 404: catches error for non-existent path', () => {
 
