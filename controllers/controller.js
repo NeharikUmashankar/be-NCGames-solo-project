@@ -1,4 +1,4 @@
-const {selectCategories} = require('../models/model')
+const {selectCategories, selectReviews} = require('../models/model')
 
 exports.getCategories = (req, res, next) => {
     selectCategories()
@@ -6,5 +6,12 @@ exports.getCategories = (req, res, next) => {
         res.status(200).send({categories})
     })
     .catch(next)
+}
+
+exports.getReviews = (req, res, next) => {
+    selectReviews()
+    .then((reviews) => {
+        res.status(200).send({reviews})
+    })
 }
 

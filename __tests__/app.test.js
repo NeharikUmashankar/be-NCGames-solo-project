@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../PathAndErrorHandlers/app');
+const app = require('../app');
 const db = require('../db/connection');
 
 
@@ -35,12 +35,43 @@ describe('1. GET api/:path', () => {
         })
     })
     })
+
+    test('status 200: responds with an array of objects with required properties', () => {
+        return request(app)
+        .get('/api/reviews ')
+        .expect(200)
+        .then(({body}) => {
+        const {reviews} = body;
+        expect(reviews).toHaveLength(13);
+        expect(reviews).toBeSortedBy('created_at', {descending: true})
+    
+
+        reviews.forEach((review) => {
+            expect(review).toEqual(
+                expect.objectContaining({
+                    owner: expect.any(String),
+                    title: expect.any(String),
+                    review_id: expect.any(Number),
+                    category: expect.any(String),
+                    review_img_url: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    designer: expect.any(String),
+                    comment_count: expect.any(String)
+                })
+            )
+        })
+    })
+    })
 })
 
 
 
 
-describe.only('ALL categories of undefined path', () => {
+
+
+
+describe('ALL categories of undefined path', () => {
 
     test('status 404: catches error for non-existent path', () => {
 
