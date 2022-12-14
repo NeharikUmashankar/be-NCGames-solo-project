@@ -98,7 +98,7 @@ describe("2. GET api/reviews/:review_id,", () => {
       .get("/api/reviews/576475645476574")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Path not found");
+        expect(body.msg).toBe("ID not found");
       });
   });
 });
@@ -124,33 +124,32 @@ describe("GET api/reviews/:review_id/comments,", () => {
       .then(({ body }) => {
         const { comments } = body;
 
-        expect(comments).toEqual([
-          {
-            comment_id: 6,
-            body: "Not sure about dogs, but my cat likes to get involved with board games, the boxes are their particular favourite",
-            review_id: 3,
-            author: "philippaclaire9",
-            votes: 10,
-            created_at: "2021-03-27T19:49:48.110Z",
-          },
-          {
-            comment_id: 3,
-            body: "I didn't know dogs could play games",
-            review_id: 3,
-            author: "philippaclaire9",
-            votes: 10,
-            created_at: "2021-01-18T10:09:48.110Z",
-          },
-          {
-            comment_id: 2,
-            body: "My dog loved this game too!",
-            review_id: 3,
-            author: "mallionaire",
-            votes: 13,
-            created_at: "2021-01-18T10:09:05.410Z",
-          },
-        ]);
+        expect(comments).toHaveLength(3);
+        comments.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              review_id: expect.any(Number),
+              body: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+            })
+          );
+        });
+
         expect(comments).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+
+  test("Responds with an empty array if there's no comments for a given ID", () => {
+    const ID = 1;
+    return request(app)
+      .get(`/api/reviews/${ID}/comments`)
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toEqual([]);
       });
   });
 
@@ -168,7 +167,7 @@ describe("GET api/reviews/:review_id/comments,", () => {
       .get("/api/reviews/4875485748/comments")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Path not found");
+        expect(body.msg).toBe("ID not found");
       });
   });
 });

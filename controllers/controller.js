@@ -2,7 +2,7 @@ const {
   selectCategories,
   selectReviews,
   selectReviewByID,
-  selectCommentByReviewID,
+  selectCommentsByReviewID,
 } = require("../models/model");
 
 exports.getCategories = (req, res, next) => {
@@ -33,10 +33,10 @@ exports.getReviewByID = (req, res, next) => {
     });
 };
 
-exports.getCommentByReviewID = (req, res, next) => {
+exports.getCommentsByReviewID = (req, res, next) => {
   const ID = req.params.review_id;
 
-  selectCommentByReviewID(ID)
+  selectCommentsByReviewID(ID)
     .then((comments) => {
       res.status(200).send({ comments });
     })
