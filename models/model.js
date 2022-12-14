@@ -1,4 +1,3 @@
-const { disabled } = require("../app");
 const db = require("../db/connection");
 
 exports.selectCategories = (req, res) => {
