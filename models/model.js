@@ -1,3 +1,4 @@
+const { disabled } = require("../app");
 const db = require("../db/connection");
 
 exports.selectCategories = (req, res) => {
@@ -42,7 +43,17 @@ exports.selectReviewByID = (ID) => {
 
     .then(({ rows }) => {
       if (rows.length !== 0) return rows[0];
+      else return Promise.reject({ status: 404, message: "Path not found" });
+    });
+};
 
-      else return Promise.reject({status: 404, message: 'Path not found'})
+exports.selectCommentByReviewID = (ID) => {
+  return db
+    .query(
+      `SELECT * FROM comments where review_id = $1 ORDER BY created_at DESC;`,
+      [ID]
+    )
+    .then(({ rows }) => {
+      return rows;
     });
 };
