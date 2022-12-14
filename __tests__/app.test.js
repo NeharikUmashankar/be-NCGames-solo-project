@@ -98,7 +98,7 @@ describe("2. GET api/reviews/:review_id,", () => {
       .get("/api/reviews/576475645476574")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Path not found");
+        expect(body.msg).toBe("ID not found");
       });
   });
 });
@@ -111,6 +111,63 @@ describe("ALL categories of undefined path", () => {
       .then(({ body }) => {
         const { msg } = body;
         expect(msg).toBe("Path not found");
+      });
+  });
+});
+
+describe("GET api/reviews/:review_id/comments,", () => {
+  test("Responds with the comments of a specific review ID", () => {
+    const ID = 3;
+    return request(app)
+      .get(`/api/reviews/${ID}/comments`)
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+
+        expect(comments).toHaveLength(3);
+        comments.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              review_id: expect.any(Number),
+              body: expect.any(String),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+            })
+          );
+        });
+
+        expect(comments).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+
+  test("Responds with an empty array if there's no comments for a given ID", () => {
+    const ID = 1;
+    return request(app)
+      .get(`/api/reviews/${ID}/comments`)
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toEqual([]);
+      });
+  });
+
+  test("Error 400: invalid ID/bad request", () => {
+    return request(app)
+      .get("/api/reviews/utterGibberish/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+
+  test("Error 404: ID not found", () => {
+    return request(app)
+      .get("/api/reviews/4875485748/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("ID not found");
       });
   });
 });
