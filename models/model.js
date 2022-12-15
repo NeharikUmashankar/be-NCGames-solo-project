@@ -33,6 +33,10 @@ exports.selectReviews = (req, res) => {
 };
 
 exports.selectReviewByID = (ID) => {
+  if (Number(ID) === NaN) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
+
   return db
     .query(
       `
@@ -55,5 +59,29 @@ exports.selectCommentsByReviewID = (ID) => {
     )
     .then(({ rows }) => {
       return rows;
+    });
+};
+
+exports.insertCommentByReviewID = (newBody, reviewID) => {
+  const { username, body } = newBody;
+
+  if (
+    !Boolean(body) ||
+    !Boolean(username) ||
+    typeof username !== "string" ||
+    typeof body !== "string"
+  ) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
+
+  return db
+    .query(
+      `INSERT INTO comments 
+  (body, votes, author, review_id) 
+  VALUES ($1, $2, $3, $4) RETURNING *;`,
+      [body, 0, username, reviewID]
+    )
+    .then(({ rows }) => {
+      return rows[0];
     });
 };

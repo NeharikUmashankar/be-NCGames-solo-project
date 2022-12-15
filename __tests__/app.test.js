@@ -103,6 +103,136 @@ describe("2. GET api/reviews/:review_id,", () => {
   });
 });
 
+describe("POST get/api/reviews/:review_id/comments", () => {
+  test("status 201: Inserts the request body in comment format", () => {
+    const newComment = {
+      username: "mallionaire",
+      body: "I like ice cream",
+    };
+
+    return request(app)
+      .post("/api/reviews/3/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        const { newComment } = body;
+
+        expect(newComment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            author: expect.any(String),
+            review_id: expect.any(Number),
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
+
+  test("status 201: Inserts commend body while ignoring redundant keys", () => {
+    const newComment = {
+      username: "mallionaire",
+      body: "I like ice cream",
+      randomKey: "Of no relevance whatsoever",
+    };
+
+    return request(app)
+      .post("/api/reviews/3/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        const { newComment } = body;
+
+        expect(newComment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            author: expect.any(String),
+            review_id: expect.any(Number),
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
+
+  test("404: Nonexistent username", () => {
+    const newComment = {
+      username: "hrtjrhtjrgjtr",
+      body: "I like ice cream",
+    };
+
+    return request(app)
+      .post("/api/reviews/3/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Entry not found");
+      });
+  });
+
+  test("Error 400: Bad path/request", () => {
+    const newComment = {
+      username: "mallionaire",
+      body: "I like ice cream",
+    };
+
+    return request(app)
+      .post("/api/reviews/bruh/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Bad request");
+      });
+  });
+
+  test("Error 404: ID not found", () => {
+    const newComment = {
+      username: "mallionaire",
+      body: "I like ice cream",
+    };
+
+    return request(app)
+      .post("/api/reviews/433343434/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Entry not found");
+      });
+  });
+
+  test("Error 400: Bad request body", () => {
+    const newComment = {
+      username: "mallionaire",
+      body: 65,
+    };
+
+    return request(app)
+      .post("/api/reviews/3/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Bad request");
+      });
+  });
+
+  test("Error 400: Missing elements in request body", () => {
+    const newComment = {};
+
+    return request(app)
+      .post("/api/reviews/3/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Bad request");
+      });
+  });
+});
+
 describe("ALL categories of undefined path", () => {
   test("status 404: catches error for non-existent path", () => {
     return request(app)
