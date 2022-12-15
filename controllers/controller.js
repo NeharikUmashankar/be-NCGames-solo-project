@@ -3,7 +3,7 @@ const {
   selectReviews,
   selectReviewByID,
   selectCommentsByReviewID,
-  insertCommentByReviewID,
+  insertCommentByReviewID
 } = require("../models/model");
 
 exports.getCategories = (req, res, next) => {
@@ -51,3 +51,4 @@ exports.postCommentByReviewID = (req, res, next) => {
     })
     .catch(next);
 };
+

@@ -10,7 +10,7 @@ afterAll(() => {
   if (db.end) db.end();
 });
 
-describe("1. GET api/:path", () => {
+describe("GET api/:path", () => {
   test("status 200: responds with an array of objects with properties of slug and description", () => {
     return request(app)
       .get("/api/categories")
@@ -59,7 +59,7 @@ describe("1. GET api/:path", () => {
   });
 });
 
-describe("2. GET api/reviews/:review_id,", () => {
+describe("GET api/reviews/:review_id,", () => {
   test("Responds with a single review as per specified ID", () => {
     const ID = 6;
     return request(app)
@@ -119,10 +119,10 @@ describe("POST get/api/reviews/:review_id/comments", () => {
 
         expect(newComment).toEqual(
           expect.objectContaining({
-            comment_id: expect.any(Number),
-            body: expect.any(String),
-            author: expect.any(String),
-            review_id: expect.any(Number),
+            comment_id: 7,
+            body: "I like ice cream",
+            author: "mallionaire",
+            review_id: 3,
             created_at: expect.any(String),
           })
         );
@@ -145,10 +145,10 @@ describe("POST get/api/reviews/:review_id/comments", () => {
 
         expect(newComment).toEqual(
           expect.objectContaining({
-            comment_id: expect.any(Number),
-            body: expect.any(String),
-            author: expect.any(String),
-            review_id: expect.any(Number),
+            comment_id: 7,
+            body: "I like ice cream",
+            author: "mallionaire",
+            review_id: 3,
             created_at: expect.any(String),
           })
         );

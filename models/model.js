@@ -85,3 +85,4 @@ exports.insertCommentByReviewID = (newBody, reviewID) => {
       return rows[0];
     });
 };
+

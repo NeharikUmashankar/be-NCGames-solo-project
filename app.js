@@ -7,7 +7,7 @@ const {
   getReviews,
   getReviewByID,
   getCommentsByReviewID,
-  postCommentByReviewID,
+  postCommentByReviewID
 } = require("./controllers/controller");
 const {
   handle404s,
