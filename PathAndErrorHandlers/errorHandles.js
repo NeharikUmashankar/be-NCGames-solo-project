@@ -8,7 +8,7 @@ exports.handle400s = (err, req, res, next) => {
 
 exports.handle404s = (err, req, res, next) => {
   if (err.message !== undefined) {
-    res.status(404).send({ msg: "Path not found" });
+    res.status(404).send({ msg: "ID not found" });
   } else next(err);
 };
 
