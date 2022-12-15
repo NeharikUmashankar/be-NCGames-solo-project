@@ -85,3 +85,23 @@ exports.insertCommentByReviewID = (newBody, reviewID) => {
       return rows[0];
     });
 };
+
+exports.updateReviewByID = (update, ID) => {
+  const { inc_votes } = update;
+  if (Number(ID) === NaN)
+    return Promise.reject({ status: 400, msg: "Invalid ID" });
+
+  return db
+    .query(
+      `UPDATE reviews
+      SET votes = votes + $1
+      WHERE review_id = $2
+      RETURNING *`,
+      [inc_votes, ID]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0)
+        return Promise.reject({ status: 404, msg: "ID not found" });
+      else return rows[0];
+    });
+};

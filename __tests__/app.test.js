@@ -233,6 +233,78 @@ describe("POST get/api/reviews/:review_id/comments", () => {
   });
 });
 
+describe("PATCH /api/reviews/:review_id", () => {
+  test("status:200, responds with the updated review", () => {
+    const reviewUpdate = { inc_votes: 23 };
+    return request(app)
+      .patch("/api/reviews/7")
+      .send(reviewUpdate)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.updatedReview).toEqual({
+          review_id: 7,
+          title: "Mollit elit qui incididunt veniam occaecat cupidatat",
+          category: "social deduction",
+          designer: "Avery Wunzboogerz",
+          owner: "mallionaire",
+          review_body:
+            "Consectetur incididunt aliquip sunt officia. Magna ex nulla consectetur laboris incididunt ea non qui. Enim id eiusmod irure dolor ipsum in tempor consequat amet ullamco. Occaecat fugiat sint fugiat mollit consequat pariatur consequat non exercitation dolore. Labore occaecat in magna commodo anim enim eiusmod eu pariatur ad duis magna. Voluptate ad et dolore ullamco anim sunt do. Qui exercitation tempor in in minim ullamco fugiat ipsum. Duis irure voluptate cupidatat do id mollit veniam culpa. Velit deserunt exercitation amet laborum nostrud dolore in occaecat minim amet nostrud sunt in. Veniam ut aliqua incididunt commodo sint in anim duis id commodo voluptate sit quis.",
+          review_img_url:
+            "https://images.pexels.com/photos/278888/pexels-photo-278888.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+          created_at: "2021-01-25T11:16:54.963Z",
+          votes: 32,
+        });
+      });
+  });
+
+  test("status:200, responds with the updated review so long as the needed key is present", () => {
+    const reviewUpdate = { inc_votes: 23, randomKey: "545454" };
+    return request(app)
+      .patch("/api/reviews/7")
+      .send(reviewUpdate)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.updatedReview).toEqual({
+          review_id: 7,
+          title: "Mollit elit qui incididunt veniam occaecat cupidatat",
+          category: "social deduction",
+          designer: "Avery Wunzboogerz",
+          owner: "mallionaire",
+          review_body:
+            "Consectetur incididunt aliquip sunt officia. Magna ex nulla consectetur laboris incididunt ea non qui. Enim id eiusmod irure dolor ipsum in tempor consequat amet ullamco. Occaecat fugiat sint fugiat mollit consequat pariatur consequat non exercitation dolore. Labore occaecat in magna commodo anim enim eiusmod eu pariatur ad duis magna. Voluptate ad et dolore ullamco anim sunt do. Qui exercitation tempor in in minim ullamco fugiat ipsum. Duis irure voluptate cupidatat do id mollit veniam culpa. Velit deserunt exercitation amet laborum nostrud dolore in occaecat minim amet nostrud sunt in. Veniam ut aliqua incididunt commodo sint in anim duis id commodo voluptate sit quis.",
+          review_img_url:
+            "https://images.pexels.com/photos/278888/pexels-photo-278888.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+          created_at: "2021-01-25T11:16:54.963Z",
+          votes: 32,
+        });
+      });
+  });
+
+  test("status:404: ID not found", () => {
+    const reviewUpdate = { inc_votes: 23 };
+    return request(app)
+      .patch("/api/reviews/446565565")
+      .send(reviewUpdate)
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("ID not found");
+      });
+  });
+
+  test("status:400: Bad request", () => {
+    const reviewUpdate = { inc_votes: 23 };
+    return request(app)
+      .patch("/api/reviews/goku")
+      .send(reviewUpdate)
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Bad request");
+      });
+  });
+});
+
 describe("ALL categories of undefined path", () => {
   test("status 404: catches error for non-existent path", () => {
     return request(app)
