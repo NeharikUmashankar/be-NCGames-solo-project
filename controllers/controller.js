@@ -5,6 +5,7 @@ const {
   selectCommentsByReviewID,
   insertCommentByReviewID,
   updateReviewByID,
+  selectUsers
 } = require("../models/model");
 
 exports.getCategories = (req, res, next) => {
@@ -19,6 +20,14 @@ exports.getReviews = (req, res, next) => {
   selectReviews()
     .then((reviews) => {
       res.status(200).send({ reviews });
+    })
+    .catch(next);
+};
+
+exports.getUsers = (req, res, next) => {
+  selectUsers()
+    .then((users) => {
+      res.status(200).send({ users });
     })
     .catch(next);
 };

@@ -5,6 +5,7 @@ app.use(express.json());
 const {
   getCategories,
   getReviews,
+  getUsers,
   getReviewByID,
   getCommentsByReviewID,
   postCommentByReviewID,
@@ -19,6 +20,7 @@ const {
 
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
+app.get('/api/users', getUsers)
 app.get("/api/reviews/:review_id", getReviewByID);
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewID);
 app.post("/api/reviews/:review_id/comments", postCommentByReviewID);
