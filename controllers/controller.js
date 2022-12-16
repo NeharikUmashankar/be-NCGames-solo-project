@@ -1,9 +1,10 @@
 const {
   selectCategories,
   selectReviews,
+  selectUsers,
   selectReviewByID,
   selectCommentsByReviewID,
-  insertCommentByReviewID
+  insertCommentByReviewID,
 } = require("../models/model");
 
 exports.getCategories = (req, res, next) => {
@@ -14,12 +15,22 @@ exports.getCategories = (req, res, next) => {
     .catch(next);
 };
 
+exports.getUsers = (req, res, next) => {
+  selectUsers()
+    .then((users) => {
+      res.status(200).send({ users });
+    })
+    .catch(next);
+};
+
 exports.getReviews = (req, res, next) => {
-  selectReviews()
+  selectReviews(req.query)
     .then((reviews) => {
       res.status(200).send({ reviews });
     })
-    .catch(next);
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.getReviewByID = (req, res, next) => {
@@ -51,4 +62,3 @@ exports.postCommentByReviewID = (req, res, next) => {
     })
     .catch(next);
 };
-

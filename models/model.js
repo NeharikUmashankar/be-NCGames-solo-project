@@ -1,3 +1,4 @@
+const e = require("express");
 const db = require("../db/connection");
 
 exports.selectCategories = (req, res) => {
@@ -6,27 +7,75 @@ exports.selectCategories = (req, res) => {
   });
 };
 
-exports.selectReviews = (req, res) => {
+exports.selectUsers = (req, res) => {
+  return db.query("SELECT * FROM users;").then(({ rows }) => {
+    return rows;
+  });
+};
+
+exports.selectReviews = (query = undefined) => {
   return db
-    .query(
-      `
-        SELECT reviews.review_id,
-        reviews.title,
-        reviews.designer,
-        reviews.owner,
-        reviews.review_img_url,
-        reviews.category,
-        reviews.created_at,
-        reviews.votes, 
+    .query("SELECT category FROM reviews;")
+    .then(({ rows }) => {
+      const categorySet = [];
 
-        COUNT(comments.review_id) AS comment_count
+      rows.forEach((element) => categorySet.push(element.category));
 
-        FROM comments RIGHT JOIN reviews
-        ON comments.review_id = reviews.review_id
-        GROUP BY reviews.review_id
-        ORDER BY reviews.created_at DESC;
-     `
-    )
+      let categorySort = ``;
+      let chosenOrder = "DESC";
+      let sort = `reviews.created_at `;
+
+      if (Object.keys(query).includes("category")) {
+        categorySort = `WHERE reviews.category = '${query.category}'`;
+      }
+
+      if (Object.keys(query).includes("sort_by")) {
+        sort = `reviews.${query.sort_by} `;
+      }
+
+      if (Object.keys(query).includes("order")) {
+        chosenOrder = `${query.order}`;
+      }
+
+      if (
+        !["ASC", "DESC"].includes(chosenOrder.toUpperCase()) ||
+        ![...new Set(categorySet), undefined].includes(query.category) ||
+        ![
+          "reviews.owner ",
+          "reviews.title ",
+          "reviews.review_id ",
+          "reviews.category ",
+          "reviews.review_img_url ",
+          "reviews.created_at ",
+          "reviews.votes ",
+          "reviews.designer ",
+          "reviews.comment_count ",
+        ].includes(sort)
+      ) {
+        return Promise.reject({ status: 404, msg: "Input not found" });
+      }
+
+      const queryStatement =
+        ` SELECT reviews.review_id,
+    reviews.title,
+    reviews.designer,
+    reviews.owner,
+    reviews.review_img_url,
+    reviews.category,
+    reviews.created_at,
+    reviews.votes, 
+
+    COUNT(comments.review_id) AS comment_count
+
+    FROM comments RIGHT JOIN reviews
+    ON comments.review_id = reviews.review_id ` +
+        categorySort +
+        ` GROUP BY reviews.review_id
+    ORDER BY ${sort} ${chosenOrder};`;
+
+      return db.query(queryStatement);
+    })
+
     .then(({ rows }) => {
       return rows;
     });
@@ -85,4 +134,3 @@ exports.insertCommentByReviewID = (newBody, reviewID) => {
       return rows[0];
     });
 };
-

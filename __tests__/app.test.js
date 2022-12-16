@@ -103,6 +103,28 @@ describe("GET api/reviews/:review_id,", () => {
   });
 });
 
+describe("GET /api/users", () => {
+  test("status 200: responds with an array of objects with users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        expect(users).toHaveLength(4);
+
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+});
+
 describe("POST get/api/reviews/:review_id/comments", () => {
   test("status 201: Inserts the request body in comment format", () => {
     const newComment = {
@@ -241,6 +263,80 @@ describe("ALL categories of undefined path", () => {
       .then(({ body }) => {
         const { msg } = body;
         expect(msg).toBe("Path not found");
+      });
+  });
+});
+
+describe("GET api/reviews?query", () => {
+  test("status 200: responds with category = social deduction", () => {
+    return request(app)
+      .get("/api/reviews?category=social+deduction")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toHaveLength(11);
+        expect(reviews).toBeSortedBy("created_at", { descending: true });
+        reviews.forEach((review) => {
+          expect(review).toEqual(
+            expect.objectContaining({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: "social deduction",
+              review_img_url: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+
+  test("status 200: responds with review sorted as per input", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=review_id")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews).toHaveLength(13);
+        expect(reviews).toBeSortedBy("review_id", { descending: true });
+        reviews.forEach((review) => {
+          expect(review).toEqual(
+            expect.objectContaining({
+              owner: expect.any(String),
+              title: expect.any(String),
+              review_id: expect.any(Number),
+              category: expect.any(String),
+              review_img_url: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              designer: expect.any(String),
+              comment_count: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+
+  test("status 404: Input not found", () => {
+    return request(app)
+      .get("/api/reviews?category='iDontExist'")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Input not found");
+      });
+  });
+
+  test("status 404: Input not found", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=54")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("Input not found");
       });
   });
 });
