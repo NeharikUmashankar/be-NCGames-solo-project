@@ -365,7 +365,6 @@ describe("ALL categories of undefined path", () => {
 });
 
 describe("GET /api/users", () => {
-
   test("status 200: responds with an array of objects with properties of slug and description", () => {
     return request(app)
       .get("/api/users")
@@ -385,17 +384,6 @@ describe("GET /api/users", () => {
         });
       });
   });
-
-  test("status 404: Invalid path", () => {
-    return request(app)
-      .get("/api/userzzzz")
-      .expect(404)
-      .then(({ body }) => {
-        const { msg } = body;
-        expect(msg).toBe('Path not found')
-      });
-  });
-
 });
 
 describe("GET api/reviews/:review_id/comments,", () => {
