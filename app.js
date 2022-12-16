@@ -7,7 +7,8 @@ const {
   getReviews,
   getReviewByID,
   getCommentsByReviewID,
-  postCommentByReviewID
+  postCommentByReviewID,
+  patchReviewByID
 } = require("./controllers/controller");
 const {
   handle404s,
@@ -21,6 +22,7 @@ app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id", getReviewByID);
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewID);
 app.post("/api/reviews/:review_id/comments", postCommentByReviewID);
+app.patch('/api/reviews/:review_id', patchReviewByID);
 app.use("/*", handleBadPath); //Bad paths
 
 //Error handling

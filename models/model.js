@@ -86,3 +86,21 @@ exports.insertCommentByReviewID = (newBody, reviewID) => {
     });
 };
 
+
+exports.updateReviewByID = (update, ID) => {
+  const { inc_votes } = update;
+  return db
+    .query(
+      `UPDATE reviews
+      SET votes = votes + $1
+      WHERE review_id = $2
+      RETURNING *`,
+      [inc_votes, ID]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0)
+        return Promise.reject({ status: 404, msg: "ID not found" });
+      else return rows[0];
+    });
+};
+
