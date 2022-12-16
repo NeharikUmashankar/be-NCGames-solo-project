@@ -303,7 +303,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       });
   });
 
-  test("status:404: ID not found", () => {
+  test("status:404: ID valid but not found", () => {
     const reviewUpdate = { inc_votes: 23 };
     return request(app)
       .patch("/api/reviews/446565565")
@@ -328,7 +328,7 @@ describe("PATCH /api/reviews/:review_id", () => {
   });
 
   test("status:400: Bad request when body is malformed", () => {
-    const reviewUpdate = { irrelevant_key: '23' };
+    const reviewUpdate = { irrelevant_key: "23" };
     return request(app)
       .patch("/api/reviews/goku")
       .send(reviewUpdate)
@@ -351,8 +351,6 @@ describe("PATCH /api/reviews/:review_id", () => {
       });
   });
 });
-
-
 
 describe("ALL categories of undefined path", () => {
   test("status 404: catches error for non-existent path", () => {
