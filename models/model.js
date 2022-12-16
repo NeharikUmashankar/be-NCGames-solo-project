@@ -88,9 +88,6 @@ exports.insertCommentByReviewID = (newBody, reviewID) => {
 
 exports.updateReviewByID = (update, ID) => {
   const { inc_votes } = update;
-  // if (Number(ID) === NaN)
-  //   return Promise.reject({ status: 400, msg: "Invalid ID" });
-
   return db
     .query(
       `UPDATE reviews
