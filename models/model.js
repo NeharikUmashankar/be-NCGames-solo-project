@@ -86,6 +86,7 @@ exports.insertCommentByReviewID = (newBody, reviewID) => {
     });
 };
 
+
 exports.updateReviewByID = (update, ID) => {
   const { inc_votes } = update;
   return db
@@ -102,3 +103,4 @@ exports.updateReviewByID = (update, ID) => {
       else return rows[0];
     });
 };
+
