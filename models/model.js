@@ -6,6 +6,12 @@ exports.selectCategories = (req, res) => {
   });
 };
 
+exports.selectUsers = (req, res) => {
+  return db.query("SELECT * FROM users;").then(({ rows }) => {
+    return rows;
+  });
+};
+
 exports.selectReviews = (req, res) => {
   return db
     .query(

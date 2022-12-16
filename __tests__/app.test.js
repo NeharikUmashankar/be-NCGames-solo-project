@@ -364,6 +364,40 @@ describe("ALL categories of undefined path", () => {
   });
 });
 
+describe("GET /api/users", () => {
+
+  test("status 200: responds with an array of objects with properties of slug and description", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        expect(users).toHaveLength(4);
+
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+
+  test("status 404: Invalid path", () => {
+    return request(app)
+      .get("/api/userzzzz")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe('Path not found')
+      });
+  });
+
+});
+
 describe("GET api/reviews/:review_id/comments,", () => {
   test("Responds with the comments of a specific review ID", () => {
     const ID = 3;
