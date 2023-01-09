@@ -6,7 +6,6 @@ const {
   selectCommentsByReviewID,
   insertCommentByReviewID,
   updateReviewByID,
-  selectUsers
 } = require("../models/model");
 
 exports.getCategories = (req, res, next) => {
@@ -80,5 +79,3 @@ exports.patchReviewByID = (req, res, next) => {
       next(err);
     });
 };
-
-
