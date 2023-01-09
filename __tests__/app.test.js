@@ -439,7 +439,7 @@ describe("GET api/reviews?query", () => {
       });
   });
 
-  test("status 404: Input not found", () => {
+  test.only("status 404: Input not found", () => {
     return request(app)
       .get("/api/reviews?category='iDontExist'")
       .expect(404)

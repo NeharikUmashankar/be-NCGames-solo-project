@@ -1,4 +1,5 @@
 const e = require("express");
+const { query } = require("../db/connection");
 const db = require("../db/connection");
 
 exports.selectCategories = (req, res) => {
@@ -13,13 +14,14 @@ exports.selectUsers = (req, res) => {
   });
 };
 
-exports.selectReviews = (req, res) => {
+exports.selectReviews = (query) => {
   return db
-    .query("SELECT category FROM reviews;")
+    .query("SELECT * FROM categories;")
     .then(({ rows }) => {
       const categorySet = [];
-
-      rows.forEach((element) => categorySet.push(element.category));
+      
+      rows.forEach((element) => categorySet.push(element.slug));
+      console.log(categorySet, '<<<CATEGORIES')
 
       let categorySort = ``;
       let chosenOrder = "DESC";
