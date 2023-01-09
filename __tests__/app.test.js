@@ -33,7 +33,7 @@ describe("GET api/:path", () => {
 
   test("status 200: responds with an array of objects with required properties", () => {
     return request(app)
-      .get("/api/reviews ")
+      .get("/api/reviews")
       .expect(200)
       .then(({ body }) => {
         const { reviews } = body;
@@ -433,13 +433,11 @@ describe("GET api/reviews?query", () => {
               votes: expect.any(Number),
               designer: expect.any(String),
               comment_count: expect.any(String),
-
             })
           );
         });
       });
   });
-
 
   test("status 404: Input not found", () => {
     return request(app)
