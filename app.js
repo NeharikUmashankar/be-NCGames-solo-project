@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
+app.use(cors());
 app.use(express.json());
 
 const {
@@ -9,7 +11,7 @@ const {
   getReviewByID,
   getCommentsByReviewID,
   postCommentByReviewID,
-  patchReviewByID
+  patchReviewByID,
 } = require("./controllers/controller");
 const {
   handle404s,
@@ -20,11 +22,11 @@ const {
 
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
-app.get('/api/users', getUsers)
+app.get("/api/users", getUsers);
 app.get("/api/reviews/:review_id", getReviewByID);
 app.get("/api/reviews/:review_id/comments", getCommentsByReviewID);
 app.post("/api/reviews/:review_id/comments", postCommentByReviewID);
-app.patch('/api/reviews/:review_id', patchReviewByID);
+app.patch("/api/reviews/:review_id", patchReviewByID);
 app.use("/*", handleBadPath); //Bad paths
 
 //Error handling
