@@ -13,7 +13,7 @@ exports.selectUsers = (req, res) => {
   });
 };
 
-exports.selectReviews = (query = undefined) => {
+exports.selectReviews = (req, res) => {
   return db
     .query("SELECT category FROM reviews;")
     .then(({ rows }) => {
@@ -132,5 +132,23 @@ exports.insertCommentByReviewID = (newBody, reviewID) => {
     )
     .then(({ rows }) => {
       return rows[0];
+    });
+};
+
+
+exports.updateReviewByID = (update, ID) => {
+  const { inc_votes } = update;
+  return db
+    .query(
+      `UPDATE reviews
+      SET votes = votes + $1
+      WHERE review_id = $2
+      RETURNING *`,
+      [inc_votes, ID]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0)
+        return Promise.reject({ status: 404, msg: "ID not found" });
+      else return rows[0];
     });
 };
